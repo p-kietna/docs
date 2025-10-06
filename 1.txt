@@ -1,0 +1,46 @@
+Great question — both strategies have their use cases, but here's a breakdown to help you choose the better one based on performance, reliability, and user experience.
+
+---
+
+### 📦 Case 1: Chunked Upload with Partial Success
+
+**Strategy**: Upload 10 files at once. If some succeed, immediately append the next files to fill the chunk.
+
+#### ✅ Pros:
+- **Faster throughput**: You don’t wait for all 10 to succeed before moving on.
+- **More resilient**: Failed files don’t block the rest — you retry only the failed ones.
+- **Better for large batches**: Keeps the pipeline moving.
+
+#### ❌ Cons:
+- **More complex logic**: You need to track which files succeeded, retry failed ones, and manage dynamic chunking.
+- **Harder to debug**: Partial failures can be tricky to trace.
+
+---
+
+### ⏳ Case 2: Wait for All 10 to Succeed Before Next Chunk
+
+**Strategy**: Upload 10 files. Wait until all succeed. Then upload the next 10.
+
+#### ✅ Pros:
+- **Simpler logic**: Easier to manage success/failure per batch.
+- **Predictable flow**: You know exactly when each chunk is done.
+- **Better for transactional uploads**: If you need atomic success (e.g., all-or-nothing).
+
+#### ❌ Cons:
+- **Slower overall**: One failed file delays the entire batch.
+- **Less efficient**: You’re not maximizing parallelism.
+
+---
+
+### 🧠 Which Is Better?
+
+| Use Case                      | Recommended Strategy     |
+|------------------------------|--------------------------|
+| Speed and scalability         | ✅ Case 1 (partial success) |
+| Simplicity and reliability    | ✅ Case 2 (wait for all)   |
+| Uploading critical documents  | ✅ Case 2                 |
+| Uploading media or bulk files | ✅ Case 1                 |
+
+---
+
+If you're building a file uploader in Next.js or React, I can help you implement either strategy with retry logic, progress bars, and error handling. Want to see sample code for chunked uploads?
